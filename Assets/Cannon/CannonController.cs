@@ -11,6 +11,8 @@ public class CannonController : MonoBehaviour {
     private float lowestFOV = 30;
     private bool zoom = false;
     private bool canShoot = true;
+    public GameObject Turn;
+    public GameObject UpDown;
     public GameObject cannonBall;
     public GameObject gun;
     public Camera cam;
@@ -75,28 +77,28 @@ public class CannonController : MonoBehaviour {
                 gmanager.SubtractBallsRemaining();
                 GameObject temp = GetCannonBall();
                 temp.transform.position = gun.transform.position;
-                temp.GetComponent<Rigidbody>().velocity = transform.TransformDirection(Vector3.left * 30);
+                temp.GetComponent<Rigidbody>().velocity = gun.transform.TransformDirection(Vector3.forward * 30);
                 temp.SetActive(true);
             }
 
             if (Input.GetKey(KeyCode.A))
             {
-                transform.Rotate(0, -1 * speed * Time.deltaTime, 0);
+                Turn.transform.Rotate(0, -1 * speed * Time.deltaTime, 0);
             }
 
             if (Input.GetKey(KeyCode.D))
             {
-                transform.Rotate(0, 1 * speed * Time.deltaTime, 0);
+                Turn.transform.Rotate(0, 1 * speed * Time.deltaTime, 0);
             }
 
             if (Input.GetKey(KeyCode.W))
             {
-                transform.Rotate(0, 0, -1 * speed * Time.deltaTime);
+                UpDown.transform.Rotate(-.5f, 0, 0 * speed * Time.deltaTime);
             }
 
             if (Input.GetKey(KeyCode.S))
             {
-                transform.Rotate(0, 0, 1 * speed * Time.deltaTime);
+                UpDown.transform.Rotate(.5f, 0, 0 * speed * Time.deltaTime);
             }
             cam.fieldOfView = currentFOV;
         }
