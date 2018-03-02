@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour {
     public GameObject highScoreText;
     public GameObject yourScoreText;
     private bool b_checkScore = false;
+    private float f_tempScore;
+    private string f_tempName;
+    private float defaultScore;
 
     private float ballsRemaining = 30;
     public Text shotsUI;
@@ -36,39 +39,41 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         //PlayerPrefs.DeleteAll();
+        defaultScore = 200;
         highScores = new float[10];
         names = new string[10];
         b_checkScore = false;
         time = 4;
 
-        if (PlayerPrefs.HasKey("HighScore"))
+        if (PlayerPrefs.HasKey("HighScore" + 1))
         {
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 highScores[i] = PlayerPrefs.GetFloat("HighScore" + i);
                 PlayerPrefs.SetFloat("HighScore" + i, highScores[i]);
                 highScoreNums[i].text = highScores[i].ToString();
-                PlayerPrefs.Save();
+                //PlayerPrefs.Save();
                 Debug.Log(highScores[i]);
             }
         }
 
         else
         {
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
-                Debug.Log("testing3");
-                PlayerPrefs.SetFloat("HighScore" + i, 0);
-                PlayerPrefs.Save();
+                defaultScore -= 20;
+                //PlayerPrefs.DeleteAll();
+                PlayerPrefs.SetFloat("HighScore" + i, defaultScore);
+                // PlayerPrefs.Save();
                 highScores[i] = PlayerPrefs.GetFloat("HighScore" + i);
                 highScoreNums[i].text = highScores[i].ToString();
-                PlayerPrefs.Save();
+                //PlayerPrefs.Save();
             }
         }
 
-        if (PlayerPrefs.HasKey("Names1"))
+        if (PlayerPrefs.HasKey("Names1" + 1))
         {
-            for(int i = 0; i < 0; i++)
+            for (int i = 0; i < 10; i++)
             {
                 names[i] = PlayerPrefs.GetString("Names1" + i);
                 highScoreNames[i].text = names[i];
@@ -76,18 +81,19 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < 10; i++)
             {
+                //PlayerPrefs.SetString("Names1" + i, "AAA");
                 PlayerPrefs.SetString("Names1" + i, "AAA");
                 names[i] = PlayerPrefs.GetString("Names1" + i);
                 PlayerPrefs.Save();
-                highScoreNames[i].text = "AAA";
+                highScoreNames[i].text = names[i];
             }
         }
 
         PlayerPrefs.Save();
-		
-        foreach(GameObject go in introObjects)
+
+        foreach (GameObject go in introObjects)
         {
             go.SetActive(false);
         }
@@ -189,40 +195,31 @@ public class GameManager : MonoBehaviour {
     {
         for (int i = 0; i < 10; i++)
         {
-            if (currentScore > highScores[i])
+            if (f_tempScore > highScores[i])
             {
-                /*TempScore1 = highScores[i];
-                highScores[i] = TempScore;
-                TempScore = TempScore1;
-
-                TempName2 = names[i];
-                names[i] = TempName;
-                TempName = TempName2;*/
-
-
-
-
-                float temp = highScores[i];
                 highScores[i] = currentScore;
                 highScoreNums[i].text = highScores[i].ToString();
-                //currentScore = highScores[i];
 
-                string tempN = names[i];
                 names[i] = tempName;
                 highScoreNames[i].text = names[i];
-                tempName = tempN;
+                break;
                 //Debug.Log(highScores[i]);
                 //Debug.Log(names[i]);
                 //Debug.Log(tempN);
             }
+            else
+            {
+                //highScoreNums[i].text = highScores[i].ToString();
+                //highScoreNames[i].text = names[i];
+            }
         }
 
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
-            
-            PlayerPrefs.SetFloat("HighScore" + 1, highScores[i]);
+
+            PlayerPrefs.SetFloat("HighScore" + i, highScores[i]);
             PlayerPrefs.Save();
-            PlayerPrefs.SetString("Names1" + 1, names[i]);
+            PlayerPrefs.SetString("Names1" + i, names[i]);
             PlayerPrefs.Save();
         }
 
@@ -239,14 +236,16 @@ public class GameManager : MonoBehaviour {
         {
             if (currentScore >= highScores[i])
             {
-                
+
                 inputF.SetActive(true);
                 break;
             }
         }
     }
 
-    public void EnterName() {   
+    public void EnterName()
+    {
+        f_tempScore = currentScore;
         tempName = input.text;
         UpdateHighScore();
     }
