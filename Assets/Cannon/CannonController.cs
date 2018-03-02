@@ -15,6 +15,8 @@ public class CannonController : MonoBehaviour {
     public GameObject UpDown;
     public GameObject cannonBall;
     public GameObject gun;
+    public AudioSource fuze;
+    public AudioSource shoot;
     public Camera cam;
     private List<GameObject> li_cannonBalls;
     public GameManager gmanager;
@@ -70,14 +72,18 @@ public class CannonController : MonoBehaviour {
             if (Input.GetMouseButton(0))
             {
                 zoom = true;
+                if(!fuze.isPlaying)
+                    fuze.Play();
             }
             if (Input.GetMouseButtonUp(0))
             {
                 zoom = false;
+                fuze.Stop();
+                shoot.Play();
                 gmanager.SubtractBallsRemaining();
                 GameObject temp = GetCannonBall();
                 temp.transform.position = gun.transform.position;
-                temp.GetComponent<Rigidbody>().velocity = gun.transform.TransformDirection(Vector3.forward * (baseFOV/currentFOV) * 30);
+                temp.GetComponent<Rigidbody>().velocity = gun.transform.TransformDirection(Vector3.forward * (baseFOV/currentFOV) * 18);
                 temp.SetActive(true);
             }
 
