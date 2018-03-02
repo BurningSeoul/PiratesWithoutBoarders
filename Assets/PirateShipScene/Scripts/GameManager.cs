@@ -10,13 +10,13 @@ public class GameManager : MonoBehaviour {
 
     public GameObject[] introObjects;
     private bool gamePlayReady = false;
-    private int currentScore = 0;
+    private float currentScore = 0;
     private float scoreMultiplier = 1f;
     public Text scoreUI;
     public int winningScore;
     public Text[] highScoreNums;
     public Text[] highScoreNames;
-    private int[] highScores;
+    private float[] highScores;
     private string[] names;
     private string tempName;
     public GameObject highScorePanel;
@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour {
     public Text EndScreenScore;
 	// Use this for initialization
 	void Start () {
-        highScores = new int[10];
+        highScores = new float[10];
         names = new string[10];
 
         if (PlayerPrefs.HasKey("HighScore"))
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour {
     {
         if (currentState == GameState.GAMEPLAY)
         {
-            currentScore += score;
+            currentScore += score * scoreMultiplier;
         }
             
 
@@ -162,13 +162,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public void IncreaseScoreMultiplier() { scoreMultiplier += 0.5f; }
+
     public void UpdateHighScore()
     {
         for (int i = 0; i < 0; i++)
         {
             if (currentScore > highScores[i])
             {
-                int temp = highScores[i];
+                float temp = highScores[i];
                 highScores[i] = currentScore;
                 currentScore = temp;
 
@@ -180,7 +182,7 @@ public class GameManager : MonoBehaviour {
 
         for(int i = 0; i < 10; i++)
         {
-            PlayerPrefs.SetInt("HighScore", highScores[i]);
+            PlayerPrefs.SetFloat("HighScore", highScores[i]);
             PlayerPrefs.SetString("Names", names[i]);
         }
 

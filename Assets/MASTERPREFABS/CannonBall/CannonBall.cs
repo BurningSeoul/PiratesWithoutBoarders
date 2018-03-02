@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CannonBall : MonoBehaviour {
     public Rigidbody rb;
+    public AudioSource sploosh;
     private float time = 4f;
 
 	// Use this for initialization
@@ -24,5 +25,12 @@ public class CannonBall : MonoBehaviour {
     void OnDisable()
     {
         time = 3f;
+    }
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            sploosh.Play();
+        }
     }
 }

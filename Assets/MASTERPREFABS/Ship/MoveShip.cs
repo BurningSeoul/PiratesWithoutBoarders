@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveShip : MonoBehaviour {
 
-    private float f_speed = 1;
+    public float f_speed = 1;
     public Transform ship;
     private float f_startingPos;
     private float f_direction = -1;

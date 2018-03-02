@@ -62,7 +62,7 @@ public class CannonController : MonoBehaviour {
         {
             if (zoom)
             {
-                currentFOV = Mathf.Lerp(currentFOV, lowestFOV, Time.deltaTime * speed);
+                currentFOV = Mathf.Lerp(currentFOV, lowestFOV, Time.deltaTime * speed/3);
             } else
             {
                 currentFOV = Mathf.Lerp(currentFOV, baseFOV, Time.deltaTime * speed/2);
@@ -77,7 +77,7 @@ public class CannonController : MonoBehaviour {
                 gmanager.SubtractBallsRemaining();
                 GameObject temp = GetCannonBall();
                 temp.transform.position = gun.transform.position;
-                temp.GetComponent<Rigidbody>().velocity = gun.transform.TransformDirection(Vector3.forward * 30);
+                temp.GetComponent<Rigidbody>().velocity = gun.transform.TransformDirection(Vector3.forward * (baseFOV/currentFOV) * 30);
                 temp.SetActive(true);
             }
 

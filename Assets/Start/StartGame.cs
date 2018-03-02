@@ -7,7 +7,7 @@ public class StartGame : MonoBehaviour {
     public GameManager gManager;
     public GameObject firstDestination;
     public GameObject finalDestination;
-    private bool reachedDestination;
+    private bool reachedDestination = false;
     public List<GameObject> clouds;
 
 	// Use this for initialization
@@ -19,32 +19,33 @@ public class StartGame : MonoBehaviour {
 	void Update () {
 		if(gManager.GetCurrentState() == GameManager.GameState.INTRO)
         {
-            if (!clouds[0].GetComponent<MoveClouds>().GetIsMoving())
-            {
-                for (int i = 0; i < clouds.Count; i++)
-                {
-                    clouds[i].GetComponent<MoveClouds>().SetIsMoving(true);
-                }
-            }
+            
 
             if (reachedDestination)
             {
+                if (!clouds[0].GetComponent<MoveClouds>().GetIsMoving())
+                {
+                    for (int i = 0; i < clouds.Count; i++)
+                    {
+                        clouds[i].GetComponent<MoveClouds>().SetIsMoving(true);
+                    }
+                }
                 Vector3 pos = transform.position;
                 Vector3 dest = finalDestination.transform.position;
-                if(Vector3.Distance(dest,pos) <= 1.0f)
+                if(Vector3.Distance(dest,pos) <= 0.2f)
                 {
                    
                     gManager.SetGameReady(true);
                     gameObject.SetActive(false);
                 }
-                pos = Vector3.MoveTowards(pos, finalDestination.transform.position, Time.deltaTime * 6);
+                pos = Vector3.MoveTowards(pos, finalDestination.transform.position, Time.deltaTime * 10);
                 transform.position = pos;
             } else
             {
                 
                 Vector3 pos = transform.position;
-                Vector3 dest = finalDestination.transform.position;
-                if (Vector3.Distance(pos,dest) <= 1.0f)
+                Vector3 dest = firstDestination.transform.position;
+                if (Vector3.Distance(pos,dest) <= 0.1f)
                 {
                     reachedDestination = true;
                    
