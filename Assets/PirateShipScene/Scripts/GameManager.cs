@@ -5,12 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
-    public enum GameState {MENU, INTRO, GAMEPLAY, GAMEOVER };
+    public enum GameState {MENU, INTRO, GAMEPLAY, GAMEOVER, HIGHSCORE };
     private GameState currentState = GameState.MENU;
 
     public GameObject[] introObjects;
     private bool gamePlayReady = false;
-    private float currentScore = 0;
+    private int currentScore = 0;
     private float scoreMultiplier = 1f;
     public Text scoreUI;
     public int winningScore;
@@ -18,7 +18,14 @@ public class GameManager : MonoBehaviour {
     public Text[] highScoreNames;
     private int[] highScores;
     private string[] names;
+    private string tempName;
     public GameObject highScorePanel;
+    public GameObject inputF;
+    public InputField input;
+    private bool startTimer = false;
+    private float time = 4;
+    public GameObject highScoreText;
+    public GameObject yourScoreText;
 
     private float ballsRemaining = 30;
     public Text shotsUI;
@@ -71,8 +78,12 @@ public class GameManager : MonoBehaviour {
         {
             go.SetActive(false);
         }
+        startTimer = false;
         EndScreenPanel.SetActive(false);
         highScorePanel.SetActive(false);
+        highScoreText.SetActive(false);
+        yourScoreText.SetActive(false);
+        inputF.SetActive(false);
 
     }
 
@@ -95,7 +106,7 @@ public class GameManager : MonoBehaviour {
             case GameState.GAMEPLAY:
                 if(ballsRemaining <= 0)
                 {
-                    currentState = GameState.GAMEOVER;
+                    currentState = GameState.HIGHSCORE;
                 }
                 break;
             case GameState.GAMEOVER:
@@ -105,6 +116,18 @@ public class GameManager : MonoBehaviour {
                 }
                 EndScreenPanel.SetActive(true);
                 EndScreenScore.text = currentScore.ToString();
+                break;
+            case GameState.HIGHSCORE:
+                highScorePanel.SetActive(true);
+                if (startTimer)
+                {
+                    time -= Time.deltaTime;
+
+                    if(time <= 0)
+                    {
+                        currentState = GameState.GAMEOVER;
+                    }
+                }
                 break;
             default:
                 return;
@@ -125,7 +148,7 @@ public class GameManager : MonoBehaviour {
         }
             
     }
-    public void AdjustScore(float score)
+    public void AdjustScore(int score)
     {
         if (currentState == GameState.GAMEPLAY)
         {
@@ -145,10 +168,44 @@ public class GameManager : MonoBehaviour {
         {
             if (currentScore > highScores[i])
             {
-                //int temp = highScores[i];
+                int temp = highScores[i];
+                highScores[i] = currentScore;
+                currentScore = temp;
 
+                string tempN = names[i];
+                names[i] = tempName;
+                tempName = tempN;
             }
         }
+
+        for(int i = 0; i < 10; i++)
+        {
+            PlayerPrefs.SetInt("HighScore", highScores[i]);
+            PlayerPrefs.SetString("Names", names[i]);
+        }
+
+        startTimer = true;
+        PlayerPrefs.Save();
+    }
+
+    private void CheckHighScores()
+    {
+        highScoreText.SetActive(false);
+        yourScoreText.SetActive(false);
+        for (int i = 0; i < 0; i++)
+        {
+            if (currentScore > highScores[i])
+            {
+                
+                inputF.SetActive(true);
+                break;
+            }
+        }
+    }
+
+    public void EnterName() {
+        tempName = input.text;
+        UpdateHighScore();
     }
     public void PlayAgainButton(){
         SceneManager.LoadScene("mike's testing scene");
