@@ -38,9 +38,7 @@ public class CardboardDude : MonoBehaviour {
                 }
                 break;
         }
-        
-        
-        
+
     }
     private void CalculateDistancetoTarget()
     {
@@ -70,17 +68,16 @@ public class CardboardDude : MonoBehaviour {
         UpdateTarget();
 
     }
+    
     void OnCollisionEnter(Collision other)
     {
-
-        Debug.Log(health);
         if (other.gameObject.tag == "Ball" && canBeHit)
         {
             fire.SetActive(true);
             health -= 1;
             canBeHit = false;
             pain.Play();
-            gmanager.AdjustScore(+10);
+            gmanager.AdjustScore(10);
             StartCoroutine(OnFire());
         }
     }
