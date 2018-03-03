@@ -12,7 +12,6 @@ public class CardboardDude : MonoBehaviour {
     public GameManager gmanager;
     public GameObject[] fireLives;
     public AudioSource pain;
-    public float distanceBeforeNewTarget = 0.2f;
     private bool canBeHit = true;
     private int currentTarget = 0;
     private NavMeshAgent agent;
@@ -21,7 +20,7 @@ public class CardboardDude : MonoBehaviour {
 	void Start () {
         int waypointSize = waypointObject.transform.childCount;
         waypoints = new GameObject[waypointSize];
-        //Intitalize pirate arrray
+        //Intitalize pirate waypoint arrray
         for (int i = 0; i < waypointSize; i++)
         {
             waypoints[i] = waypointObject.transform.GetChild(i).gameObject;
@@ -35,9 +34,14 @@ public class CardboardDude : MonoBehaviour {
             life.SetActive(false);
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
+    
+    private void Awake()
+    {
+        health = 3;
+    }
+
+    // Update is called once per frame
+    void Update () {
 
         switch (gmanager.GetGameState())
         {
@@ -60,17 +64,15 @@ public class CardboardDude : MonoBehaviour {
             UpdateTarget();
         }
     }
+
     private void UpdateTarget()
     {
         currentTarget = Random.Range(0, waypoints.Length);
         agent.ResetPath();
         agent.SetDestination(waypoints[currentTarget].transform.position);
+        agent.isStopped = false;
     }
-    private void UpdateTarget(int newTarget)
-    {
-        currentTarget = newTarget;
-        agent.SetDestination(waypoints[currentTarget].transform.position);
-    }
+
     private IEnumerator OnFire()
     {
         

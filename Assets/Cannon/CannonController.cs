@@ -64,18 +64,18 @@ public class CannonController : MonoBehaviour {
         {
             if (zoom)
             {
-                currentFOV = Mathf.Lerp(currentFOV, lowestFOV, Time.deltaTime * speed/3);
+                currentFOV = Mathf.Lerp(currentFOV, lowestFOV, Time.deltaTime * speed/4);
             } else
             {
                 currentFOV = Mathf.Lerp(currentFOV, baseFOV, Time.deltaTime * speed/2);
             }
-            if (Input.GetMouseButton(0))
+            if (Input.GetButton("Fire"))
             {
                 zoom = true;
                 if(!fuze.isPlaying)
                     fuze.Play();
             }
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetButtonUp("Fire"))
             {
                 zoom = false;
                 fuze.Stop();
@@ -87,22 +87,22 @@ public class CannonController : MonoBehaviour {
                 temp.SetActive(true);
             }
 
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetAxis("Horizontal") < 0)
             {
                 Turn.transform.Rotate(0, -1 * speed * Time.deltaTime, 0);
             }
 
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetAxis("Horizontal") > 0)
             {
                 Turn.transform.Rotate(0, 1 * speed * Time.deltaTime, 0);
             }
 
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetAxis("Vertical") > 0)
             {
                 UpDown.transform.Rotate(-.5f, 0, 0 * speed * Time.deltaTime);
             }
 
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetAxis("Vertical") < 0)
             {
                 UpDown.transform.Rotate(.5f, 0, 0 * speed * Time.deltaTime);
             }

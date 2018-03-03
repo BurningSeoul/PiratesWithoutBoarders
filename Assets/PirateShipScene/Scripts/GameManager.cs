@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
     private float currentScore = 0;
     private float scoreMultiplier = 1f;
     public Text scoreUI;
+    public Text multiUI;
     public int winningScore;
     public Text[] highScoreNums;
     public Text[] highScoreNames;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour {
     public GameObject highScorePanel;
     public GameObject inputF;
     public InputField input;
+    public GameObject controls;
     private bool startTimer = false;
     private float time = 4;
     public GameObject highScoreText;
@@ -111,8 +113,10 @@ public class GameManager : MonoBehaviour {
         switch (currentState)
         {
             case GameState.MENU:
+                controls.SetActive(true);
                 break;
             case GameState.INTRO:
+                controls.SetActive(false);
                 if (gamePlayReady)
                 {
                     foreach (GameObject go in introObjects)
@@ -139,21 +143,20 @@ public class GameManager : MonoBehaviour {
                 {
                     go.SetActive(false);
                 }
+
                 highScorePanel.SetActive(false);
                 EndScreenPanel.SetActive(true);
                 EndScreenScore.text = currentScore.ToString();
                 break;
             case GameState.HIGHSCORE:
                 highScorePanel.SetActive(true);
+
                 if (startTimer)
-                {
-                    
+                { 
                     time -= Time.deltaTime;
 
                     if(time <= 0)
-                    {
-                        currentState = GameState.GAMEOVER;
-                    }
+                        currentState = GameState.GAMEOVER;  
                 }
                 break;
             default:
@@ -163,8 +166,12 @@ public class GameManager : MonoBehaviour {
 
     private void LateUpdate()
     {
+        if (currentScore < 0.0f)
+            currentScore = 0.0f;
+
         scoreUI.text = currentScore.ToString();
         shotsUI.text = ballsRemaining.ToString();
+        multiUI.text = scoreMultiplier.ToString();
     }
 
     public void SubtractBallsRemaining()
@@ -179,17 +186,19 @@ public class GameManager : MonoBehaviour {
     {
         if (currentState == GameState.GAMEPLAY)
         {
-            currentScore += score * scoreMultiplier;
+            if (score > 0)
+                currentScore += score * scoreMultiplier;
+            else
+                currentScore += score;
         }
             
 
         if(currentScore >= winningScore)
-        {
             currentState = GameState.GAMEOVER;
-        }
     }
 
     public void IncreaseScoreMultiplier() { scoreMultiplier += 0.5f; }
+    public void ResetScoreMultiplier() { scoreMultiplier = 1.0f; }
 
     public void UpdateHighScore()
     {
@@ -216,7 +225,6 @@ public class GameManager : MonoBehaviour {
 
         for (int i = 0; i < 10; i++)
         {
-
             PlayerPrefs.SetFloat("HighScore" + i, highScores[i]);
             PlayerPrefs.Save();
             PlayerPrefs.SetString("Names1" + i, names[i]);
@@ -236,7 +244,6 @@ public class GameManager : MonoBehaviour {
         {
             if (currentScore >= highScores[i])
             {
-
                 inputF.SetActive(true);
                 break;
             }
@@ -249,17 +256,10 @@ public class GameManager : MonoBehaviour {
         tempName = input.text;
         UpdateHighScore();
     }
-    public void PlayAgainButton(){
-        SceneManager.LoadScene("mike's testing scene");
-    }
-    public void HitStartButton()
-    {
-        currentState = GameState.INTRO;
-    }
-
-    public GameState GetGameState() { return currentState;}
+    public void PlayAgainButton(){ SceneManager.LoadScene("mike's testing scene"); }
+    public void HitStartButton() { currentState = GameState.INTRO; }
     public void SetGameReady(bool gameReady) { gamePlayReady = gameReady; }
-
+    public GameState GetGameState() { return currentState;}
     public GameState GetCurrentState() { return currentState; }
     
 }
